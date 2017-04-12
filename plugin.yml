@@ -1,0 +1,10 @@
+main: chat.Main
+version: 1.0
+name: Chats
+author: The_Spaceman
+
+commands:
+  chat:
+    description: create chats
+  c:
+    description: speak in chat
