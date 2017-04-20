@@ -44,7 +44,7 @@ public class C implements CommandExecutor {
 			}
 		}
 		if (bool) {
-			player.sendMessage("§4you arn't in a chat, use §c'/chat join <chatname>'");
+			player.sendMessage("§4you arn't in a chat, use §c/chat join <chatname>");
 		}
 
 		return false;

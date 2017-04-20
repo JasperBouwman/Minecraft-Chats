@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public class Chat implements CommandExecutor {
 
 	Main p;
+
 	public Chat(Main instance) {
 		p = instance;
 	}
@@ -85,8 +86,7 @@ public class Chat implements CommandExecutor {
 					for (String ss : list) {
 						if (Bukkit.getPlayerExact(ss) == null) {
 							a = a + 1;
-						} 
-						else {
+						} else {
 							Player players = Bukkit.getPlayerExact(ss);
 							players.sendMessage("§3chat " + s + ": §9" + player.getName() + " §rleft this chat");
 						}
@@ -134,6 +134,16 @@ public class Chat implements CommandExecutor {
 			player.sendMessage("§4you arn't in a chat, use §c/chat join <chatname> §4to join a chat");
 
 		} else if (args[0].equalsIgnoreCase("blacklist")) {
+			int a = 0;
+			for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
+				a++;
+				s.trim();
+			}
+
+			if (a == 0) {
+				player.sendMessage("§4you don't own a chat, to create one use §c/chat add <chatname>");
+				return false;
+			}
 
 			if (args.length != 3) {
 				player.sendMessage("§4wrong use, use §c/chat blacklist <add/remove> <playername>");
@@ -270,7 +280,7 @@ public class Chat implements CommandExecutor {
 				for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
 					if (p.getConfig().getString("chats." + s + ".owner").equalsIgnoreCase(player.getName())) {
 						player.sendMessage(
-								"§4you only can own 1 chat, remove your old one before you create a new one");
+								"§4you only can own 1 chat, remove §c" + s + " §4before you create a new one");
 						return false;
 					}
 				}
@@ -282,12 +292,11 @@ public class Chat implements CommandExecutor {
 						list.remove(player.getName());
 						p.getConfig().set("chats." + s + ".players", list);
 						p.saveConfig();
-						
+
 						for (String ss : list) {
 							if (Bukkit.getPlayerExact(ss) == null) {
 								a = a + 1;
-							} 
-							else {
+							} else {
 								Player players = Bukkit.getPlayerExact(ss);
 								players.sendMessage("§3chat " + s + ": §9" + player.getName() + " §rleft this chat");
 							}
@@ -328,7 +337,6 @@ public class Chat implements CommandExecutor {
 						p.saveConfig();
 						player.sendMessage("§3succesfully removed the chat §9" + s);
 						return false;
-
 					}
 				}
 
@@ -337,35 +345,41 @@ public class Chat implements CommandExecutor {
 			} else if (args.length == 2) {
 
 				if (player.isOp()) {
-					if (!p.getConfig().getString("chats." + args[1] + ".owner").equals(player.getName())) {
-						player.sendMessage("§3succesfully removed from an OP position");
-						if (Bukkit.getServer()
-								.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner")) != null) {
-							Player owner = Bukkit.getServer()
-									.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner"));
-							owner.sendMessage("§3your chat was removed by an OP");
-						}
-						ArrayList<String> list = (ArrayList<String>) p.getConfig()
-								.getStringList("chats." + args[1] + ".players");
-
-						for (String ss : list) {
-							if (Bukkit.getPlayerExact(ss) == null) {
-								a = a + 1;
-							} else if (Bukkit.getPlayerExact(ss).getName().equals(player.getName())) {
-								a = a + 1;
-							} else {
-								Player players = Bukkit.getPlayerExact(ss);
-								players.sendMessage("§3chat " + args[1] + ": §cthis chat is removed by an OP");
+					if (p.getConfig().contains("chats." + args[1])) {
+						if (!p.getConfig().getString("chats." + args[1] + ".owner").equals(player.getName())) {
+							player.sendMessage("§3succesfully removed from an OP position");
+							if (Bukkit.getServer()
+									.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner")) != null) {
+								Player owner = Bukkit.getServer()
+										.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner"));
+								owner.sendMessage("§3your chat was removed by an OP");
 							}
+							ArrayList<String> list = (ArrayList<String>) p.getConfig()
+									.getStringList("chats." + args[1] + ".players");
+
+							for (String ss : list) {
+								if (Bukkit.getPlayerExact(ss) == null) {
+									a = a + 1;
+								} else if (Bukkit.getPlayerExact(ss).getName().equals(player.getName())) {
+									a = a + 1;
+								} else {
+									Player players = Bukkit.getPlayerExact(ss);
+									players.sendMessage("§3chat " + args[1] + ": §cthis chat is removed by an OP");
+								}
+							}
+							p.getConfig().set("chats." + args[1], null);
+							p.saveConfig();
+							return false;
+						} else {
+							player.sendMessage(
+									"§4wrong use, can't remove your own chat from an OP position, use §c/chat remove");
 						}
-						p.getConfig().set("chats." + args[1], null);
-						p.saveConfig();
-						return false;
+					} else {
+						player.sendMessage("§4this chat doesn't exist");
 					}
 				} else {
 					player.sendMessage("§4wrong use, use §c/chat remove");
 				}
-
 			} else {
 				player.sendMessage("§4wrong use, use §c/chat remove");
 			}
@@ -393,7 +407,7 @@ public class Chat implements CommandExecutor {
 				}
 			} else if (args.length == 2) {
 				if (p.getConfig().contains("chats." + args[1])) {
-					player.sendMessage("§3players in chat §9" + args[1]);
+					player.sendMessage("§3players in chat §9" + args[1] + ":");
 					int i = 0;
 					for (String keys : p.getConfig().getStringList("chats." + args[1] + ".players")) {
 						if (i == 1) {
@@ -408,13 +422,19 @@ public class Chat implements CommandExecutor {
 					player.sendMessage("§4this chat doesn't exist");
 				}
 			}
-		} else {
+		} else if (args[0].equalsIgnoreCase("help")) {
+			player.sendMessage("§3welcome at the chat help centrum");
+			player.sendMessage("");
 			player.sendMessage(
-					"§4use §c/chat list §4to see all the available chats or §c/chat list <chatname> §4to see all the players in that chat.");
+					"§3use §9/chat list §3to see all the available chats or §9/chat list <chatname> §3to see all the players in that chat.");
 			player.sendMessage(
-					"§4use §c/chat add <chatname> §4to create a new chat. to join a chat use §c/chat join <chatname> §4to leave a chat use c/chat leave <chatname>");
-			player.sendMessage("§4use §c/chat blacklist <add/remove> §4to add/remove a player from your blacklist");
+					"§3use §9/chat add <chatname> §3to create a new chat. to join a chat use §9/chat join <chatname> §3to leave a chat use §9/chat leave <chatname>");
+			player.sendMessage(
+					"§3use §9/chat blacklist <add/remove> <playername> §3to add/remove a player from your blacklist");
+			player.sendMessage("§3use §9/c <message> §3to talk in the chat group");
 			return false;
+		} else {
+			player.sendMessage("§4wrong use, use §c/chat help §4 for more info");
 		}
 
 		return false;
