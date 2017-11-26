@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 
 public class TabComplete implements TabCompleter {
 
-	Main p;
+	private Main p;
 
-	public TabComplete(Main instance) {
+	TabComplete(Main instance) {
 		p = instance;
 	}
 
@@ -45,32 +45,24 @@ public class TabComplete implements TabCompleter {
 					} else if (args[0].equalsIgnoreCase("join")) {
 						List<String> list = new ArrayList<>();
 
-						for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
-							list.add(s);
-						}
+						list.addAll(p.getConfig().getConfigurationSection("chats").getKeys(false));
 						return list;
 					} else if (args[0].equalsIgnoreCase("remove")) {
 						if (player.isOp()) {
 							List<String> list = new ArrayList<>();
 
-							for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
-								list.add(s);
-							}
+							list.addAll(p.getConfig().getConfigurationSection("chats").getKeys(false));
 							return list;
 						} else {
-							List<String> list = new ArrayList<>();
-							return list;
+							return new ArrayList<>();
 						}
 					} else if (args[0].equalsIgnoreCase("list")) {
 						List<String> list = new ArrayList<>();
 
-						for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
-							list.add(s);
-						}
+						list.addAll(p.getConfig().getConfigurationSection("chats").getKeys(false));
 						return list;
 					} else {
-						List<String> list = new ArrayList<>();
-						return list;
+						return new ArrayList<>();
 					}
 				} else if (args.length == 3) {
 
@@ -78,23 +70,17 @@ public class TabComplete implements TabCompleter {
 
 						for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
 							if (p.getConfig().getString("chats." + s + ".owner").equalsIgnoreCase(player.getName())) {
-								List<String> list = p.getConfig().getStringList("chats." + s + ".blacklist");
-								return list;
-							} else {
-								return null;
+								return p.getConfig().getStringList("chats." + s + ".blacklist");
 							}
 						}
-
+						return new ArrayList<>();
 					} else if (args[0].equalsIgnoreCase("blacklist") && args[1].equalsIgnoreCase("add")) {
 						return null;
 					} else {
-						List<String> list = new ArrayList<String>();
-						return list;
+						return new ArrayList<>();
 					}
-
 				} else {
-					List<String> list = new ArrayList<String>();
-					return list;
+					return new ArrayList<>();
 				}
 			}
 		}
