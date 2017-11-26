@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 
 public class Chat implements CommandExecutor {
 
-	Main p;
+	private Main p;
 
-	public Chat(Main instance) {
+	Chat(Main instance) {
 		p = instance;
 	}
 
-	int a = 1;
+	private int a = 1;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
@@ -30,7 +30,7 @@ public class Chat implements CommandExecutor {
 		if (args.length == 0) {
 
 			if (!p.getConfig().contains("chats")) {
-				player.sendMessage("ง4you arn't in a chat, use งc/chat join <chatname>");
+				player.sendMessage("ยง4you aren't in a chat, use ยงc/chat join <chatname>");
 				return false;
 			}
 
@@ -38,12 +38,12 @@ public class Chat implements CommandExecutor {
 			for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
 				ArrayList<String> list = (ArrayList<String>) p.getConfig().getStringList("chats." + s + ".players");
 				if (list.contains(player.getName())) {
-					player.sendMessage("ง3you are in the chat: " + s);
+					player.sendMessage("ยง3you are in the chat: " + s);
 					bool = false;
 				}
 			}
 			if (bool) {
-				player.sendMessage("ง4you arn't in a chat, use งc/chat join <chatname>");
+				player.sendMessage("ยง4you aren't in a chat, use ยงc/chat join <chatname>");
 			}
 			return false;
 		}
@@ -51,17 +51,17 @@ public class Chat implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("join")) {
 
 			if (args.length != 2) {
-				player.sendMessage("ง4wrong use, use งc/chat join <chatname>");
+				player.sendMessage("ยง4wrong use, use ยงc/chat join <chatname>");
 				return false;
 			}
 
 			if (!p.getConfig().contains("chats." + args[1])) {
-				player.sendMessage("ง4this chat doesnt exist, create one using งc/chat add <chatname>");
+				player.sendMessage("ยง4this chat doesn't exist, create one using ยงc/chat add <chatname>");
 				return false;
 			}
 			ArrayList<String> list1 = (ArrayList<String>) p.getConfig().getStringList("chats." + args[1] + ".players");
 			if (list1.contains(player.getName())) {
-				player.sendMessage("ง4you already are in this chat");
+				player.sendMessage("ยง4you already are in this chat");
 				return false;
 			}
 
@@ -71,7 +71,7 @@ public class Chat implements CommandExecutor {
 						.getStringList("chats." + s + ".blacklist");
 
 				if (blacklist.contains(player.getName())) {
-					player.sendMessage("ง4you are blacklisted from this chat");
+					player.sendMessage("ยง4you are blacklisted from this chat");
 					return false;
 				}
 			}
@@ -85,10 +85,10 @@ public class Chat implements CommandExecutor {
 
 					for (String ss : list) {
 						if (Bukkit.getPlayerExact(ss) == null) {
-							a = a + 1;
+							a++;
 						} else {
 							Player players = Bukkit.getPlayerExact(ss);
-							players.sendMessage("ง3chat " + s + ": ง9" + player.getName() + " งrleft this chat");
+							players.sendMessage("ยง3chat " + s + ": ยง9" + player.getName() + "ยงr left this chat");
 						}
 					}
 				}
@@ -101,14 +101,14 @@ public class Chat implements CommandExecutor {
 					a = a + 1;
 				} else {
 					Player players = Bukkit.getPlayerExact(ss);
-					players.sendMessage("ง3chat " + args[1] + ": ง9" + player.getName() + " งrjoined this chat");
+					players.sendMessage("ยง3chat " + args[1] + ": ยง9" + player.getName() + "ยงr joined this chat");
 				}
 			}
 
 			list.add(player.getName());
 			p.getConfig().set("chats." + args[1] + ".players", list);
 			p.saveConfig();
-			player.sendMessage("ง3you joined ง9" + args[1]);
+			player.sendMessage("ยง3you joined ยง9" + args[1]);
 
 		} else if (args[0].equalsIgnoreCase("leave")) {
 
@@ -118,35 +118,31 @@ public class Chat implements CommandExecutor {
 					list.remove(player.getName());
 					p.getConfig().set("chats." + s + ".players", list);
 					p.saveConfig();
-					player.sendMessage("ง3you left ง9" + s);
+					player.sendMessage("ยง3you left ยง9" + s);
 					for (String ss : list) {
 						if (Bukkit.getPlayerExact(ss) == null) {
 							a = a + 1;
 						} else {
 							Player players = Bukkit.getPlayerExact(ss);
-							players.sendMessage("ง3chat " + s + ": ง9" + player.getName() + " งrleft this chat");
+							players.sendMessage("ยง3chat " + s + ": ยง9" + player.getName() + "ยงr left this chat");
 						}
 					}
 					return false;
 				}
 			}
 
-			player.sendMessage("ง4you arn't in a chat, use งc/chat join <chatname> ง4to join a chat");
+			player.sendMessage("ยง4you aren't in a chat, use ยงc/chat join <chatname> ยง4to join a chat");
 
 		} else if (args[0].equalsIgnoreCase("blacklist")) {
-			int a = 0;
-			for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
-				a++;
-				s.trim();
-			}
+			int a = p.getConfig().getConfigurationSection("chats").getKeys(false).size();
 
 			if (a == 0) {
-				player.sendMessage("ง4you don't own a chat, to create one use งc/chat add <chatname>");
+				player.sendMessage("ยง4you don't own a chat, to create one use ยงc/chat add <chatname>");
 				return false;
 			}
 
 			if (args.length != 3) {
-				player.sendMessage("ง4wrong use, use งc/chat blacklist <add/remove> <playername>");
+				player.sendMessage("ยง4wrong use, use ยงc/chat blacklist <add/remove> <playername>");
 				return false;
 			}
 			boolean add = false;
@@ -162,7 +158,7 @@ public class Chat implements CommandExecutor {
 							if (ss.getName().equals(args[2])) {
 
 								if (Bukkit.getServer().getPlayerExact(args[2]) == null) {
-									player.sendMessage("ง4this player must be online");
+									player.sendMessage("ยง4this player must be online");
 									return false;
 								}
 
@@ -170,18 +166,18 @@ public class Chat implements CommandExecutor {
 								ArrayList<String> list = (ArrayList<String>) p.getConfig()
 										.getStringList("chats." + s + ".blacklist");
 								if (black.getName().equals(player.getName())) {
-									player.sendMessage("ง4you can't blacklist yourself");
+									player.sendMessage("ยง4you can't blacklist yourself");
 									return false;
 								}
 								if (list.contains(black.getName())) {
-									player.sendMessage("ง4this player is already in you blacklist");
+									player.sendMessage("ยง4this player is already in you blacklist");
 									return false;
 								} else {
 									list.add(black.getName());
 									p.getConfig().set("chats." + s + ".blacklist", list);
 									p.saveConfig();
-									black.sendMessage("ง3you are blacklisted from the chat ง9" + s);
-									player.sendMessage("ง3succesfully added ง9" + black.getName());
+									black.sendMessage("ยง3you are blacklisted from the chat ยง9" + s);
+									player.sendMessage("ยง3successfully added ยง9" + black.getName());
 
 									ArrayList<String> list1 = (ArrayList<String>) p.getConfig()
 											.getStringList("chats." + s + ".players");
@@ -203,11 +199,11 @@ public class Chat implements CommandExecutor {
 				}
 
 				if (online) {
-					player.sendMessage("ง4you must use a online playername");
+					player.sendMessage("ยง4you must use a online playername");
 				}
 
 				if (add) {
-					player.sendMessage("ง4you don't own a chat, to create one use งc/chat add <chatname>");
+					player.sendMessage("ยง4you don't own a chat, to create one use ยงc/chat add <chatname>");
 				}
 
 			} else if (args[1].equalsIgnoreCase("remove")) {
@@ -221,7 +217,7 @@ public class Chat implements CommandExecutor {
 							if (ss.getName().equals(args[2])) {
 
 								if (Bukkit.getServer().getPlayerExact(args[2]) == null) {
-									player.sendMessage("ง4you must use a online playername");
+									player.sendMessage("ยง4you must use a online playername");
 									return false;
 								}
 
@@ -230,18 +226,18 @@ public class Chat implements CommandExecutor {
 										.getStringList("chats." + s + ".blacklist");
 
 								if (black.getName().equals(player.getName())) {
-									player.sendMessage("ง4you can't remove yourself");
+									player.sendMessage("ยง4you can't remove yourself");
 									return false;
 								}
 								if (!list.contains(black.getName())) {
-									player.sendMessage("ง4this player isn't in you blacklist");
+									player.sendMessage("ยง4this player isn't in you blacklist");
 									return false;
 								} else {
 									list.remove(black.getName());
 									p.getConfig().set("chats." + s + ".blacklist", list);
 									p.saveConfig();
-									black.sendMessage("ง3you aren't anymore blacklisted from the chat ง9" + s);
-									player.sendMessage("ง3succesfully removed ง9" + black.getName());
+									black.sendMessage("ยง3you aren't anymore blacklisted from the chat ยง9" + s);
+									player.sendMessage("ยง3successfully removed ยง9" + black.getName());
 									return false;
 								}
 							} else {
@@ -254,11 +250,11 @@ public class Chat implements CommandExecutor {
 				}
 
 				if (online) {
-					player.sendMessage("ง4you must use a online playername");
+					player.sendMessage("ยง4you must use a online playername");
 				}
 
 				if (remove) {
-					player.sendMessage("ง4you don't own a chat, to create one use งc/chat add <chatname>");
+					player.sendMessage("ยง4you don't own a chat, to create one use ยงc/chat add <chatname>");
 				}
 
 			}
@@ -268,19 +264,19 @@ public class Chat implements CommandExecutor {
 		else if (args[0].equalsIgnoreCase("add")) {
 
 			if (args.length != 2) {
-				player.sendMessage("ง4wrong use, use งc/chat add <chatname>");
+				player.sendMessage("ยง4wrong use, use ยงc/chat add <chatname>");
 				return false;
 			}
 
 			if (p.getConfig().contains("chats." + args[1])) {
-				player.sendMessage("ง4this chatname already exist, please use another name");
+				player.sendMessage("ยง4this chatname already exist, please use another name");
 				return false;
 			}
 			if (p.getConfig().contains("chats")) {
 				for (String s : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
 					if (p.getConfig().getString("chats." + s + ".owner").equalsIgnoreCase(player.getName())) {
 						player.sendMessage(
-								"ง4you only can own 1 chat, remove งc" + s + " ง4before you create a new one");
+								"ยง4you only can own 1 chat, remove ยงc" + s + " ยง4before you create a new one");
 						return false;
 					}
 				}
@@ -298,20 +294,20 @@ public class Chat implements CommandExecutor {
 								a = a + 1;
 							} else {
 								Player players = Bukkit.getPlayerExact(ss);
-								players.sendMessage("ง3chat " + s + ": ง9" + player.getName() + " งrleft this chat");
+								players.sendMessage("ยง3chat " + s + ": ยง9" + player.getName() + "ยงr left this chat");
 							}
 						}
 					}
 				}
 			}
 			p.getConfig().set("chats." + args[1] + ".owner", player.getName());
-			ArrayList<String> list1 = new ArrayList<String>();
-			ArrayList<String> list = new ArrayList<String>();
+			ArrayList<String> list1 = new ArrayList<>();
+			ArrayList<String> list = new ArrayList<>();
 			list.add(player.getName());
 			p.getConfig().set("chats." + args[1] + ".blacklist", list1);
 			p.getConfig().set("chats." + args[1] + ".players", list);
 			p.saveConfig();
-			player.sendMessage("ง3succesfully added the chat ง9" + args[1]);
+			player.sendMessage("ยง3successfully added the chat ยง9" + args[1]);
 
 		} else if (args[0].equalsIgnoreCase("remove")) {
 
@@ -329,30 +325,30 @@ public class Chat implements CommandExecutor {
 								a = a + 1;
 							} else {
 								Player players = Bukkit.getPlayerExact(ss);
-								players.sendMessage("ง3chat " + s + ": งcthis chat is removed by the owner");
+								players.sendMessage("ยง3chat " + s + ":ยงc this chat is removed by the owner");
 							}
 						}
 
 						p.getConfig().set("chats." + s, null);
 						p.saveConfig();
-						player.sendMessage("ง3succesfully removed the chat ง9" + s);
+						player.sendMessage("ยง3successfully removed the chat ยง9" + s);
 						return false;
 					}
 				}
 
-				player.sendMessage("ง4you don't own a chat, to create one use งc/chat add <chatname>");
+				player.sendMessage("ยง4you don't own a chat, to create one use ยงc/chat add <chatname>");
 
 			} else if (args.length == 2) {
 
 				if (player.isOp()) {
 					if (p.getConfig().contains("chats." + args[1])) {
 						if (!p.getConfig().getString("chats." + args[1] + ".owner").equals(player.getName())) {
-							player.sendMessage("ง3succesfully removed from an OP position");
+							player.sendMessage("ยง3successfully removed from an OP position");
 							if (Bukkit.getServer()
 									.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner")) != null) {
 								Player owner = Bukkit.getServer()
 										.getPlayerExact(p.getConfig().getString("chats." + args[1] + ".owner"));
-								owner.sendMessage("ง3your chat was removed by an OP");
+								owner.sendMessage("ยง3your chat was removed by an OP");
 							}
 							ArrayList<String> list = (ArrayList<String>) p.getConfig()
 									.getStringList("chats." + args[1] + ".players");
@@ -364,7 +360,7 @@ public class Chat implements CommandExecutor {
 									a = a + 1;
 								} else {
 									Player players = Bukkit.getPlayerExact(ss);
-									players.sendMessage("ง3chat " + args[1] + ": งcthis chat is removed by an OP");
+									players.sendMessage("ยง3chat " + args[1] + ":ยงc this chat is removed by an OP");
 								}
 							}
 							p.getConfig().set("chats." + args[1], null);
@@ -372,16 +368,16 @@ public class Chat implements CommandExecutor {
 							return false;
 						} else {
 							player.sendMessage(
-									"ง4wrong use, can't remove your own chat from an OP position, use งc/chat remove");
+									"ยง4wrong use, can't remove your own chat from an OP position, use ยงc/chat remove");
 						}
 					} else {
-						player.sendMessage("ง4this chat doesn't exist");
+						player.sendMessage("ยง4this chat doesn't exist");
 					}
 				} else {
-					player.sendMessage("ง4wrong use, use งc/chat remove");
+					player.sendMessage("ยง4wrong use, use ยงc/chat remove");
 				}
 			} else {
-				player.sendMessage("ง4wrong use, use งc/chat remove");
+				player.sendMessage("ยง4wrong use, use ยงc/chat remove");
 			}
 
 		} else if (args[0].equalsIgnoreCase("list")) {
@@ -389,55 +385,54 @@ public class Chat implements CommandExecutor {
 			if (args.length == 1) {
 
 				if (!p.getConfig().contains("chats")) {
-					player.sendMessage("ง4there are not chats yet, use งc/chat add <chatname> ง4to create one");
+					player.sendMessage("ยง4there are not chats yet, use ยงc/chat add <chatname> ยง4to create one");
 					return false;
 				}
 
-				player.sendMessage("ง3these are the chats: ");
+				player.sendMessage("ยง3these are the chats: ");
 				int i = 0;
 				for (String keys : p.getConfig().getConfigurationSection("chats").getKeys(false)) {
 					if (i == 1) {
-						player.sendMessage("ง3" + keys);
+						player.sendMessage("ยง3" + keys);
 						i = 0;
 					} else {
-						player.sendMessage("ง9" + keys);
+						player.sendMessage("ยง9" + keys);
 						i = 1;
 					}
 
 				}
 			} else if (args.length == 2) {
 				if (p.getConfig().contains("chats." + args[1])) {
-					player.sendMessage("ง3players in chat ง9" + args[1] + ":");
+					player.sendMessage("ยง3players in chat ยง9" + args[1] + ":");
 					int i = 0;
 					for (String keys : p.getConfig().getStringList("chats." + args[1] + ".players")) {
 						if (i == 1) {
-							player.sendMessage("ง3" + keys);
+							player.sendMessage("ยง3" + keys);
 							i = 0;
 						} else {
-							player.sendMessage("ง9" + keys);
+							player.sendMessage("ยง9" + keys);
 							i = 1;
 						}
 					}
 				} else {
-					player.sendMessage("ง4this chat doesn't exist");
+					player.sendMessage("ยง4this chat doesn't exist");
 				}
 			}
 		} else if (args[0].equalsIgnoreCase("help")) {
-			player.sendMessage("ง3welcome at the chat help centrum");
+			player.sendMessage("ยง3welcome at the chat help centrum");
 			player.sendMessage("");
 			player.sendMessage(
-					"ง3use ง9/chat list ง3to see all the available chats or ง9/chat list <chatname> ง3to see all the players in that chat.");
+					"ยง3use ยง9/chat list ยง3to see all the available chats or ยง9/chat list <chatname> ยง3to see all the players in that chat.");
 			player.sendMessage(
-					"ง3use ง9/chat add <chatname> ง3to create a new chat. to join a chat use ง9/chat join <chatname> ง3to leave a chat use ง9/chat leave <chatname>");
+					"ยง3use ยง9/chat add <chatname> ยง3to create a new chat. to join a chat use ยง9/chat join <chatname> ยง3to leave a chat use ยง9/chat leave <chatname>");
 			player.sendMessage(
-					"ง3use ง9/chat blacklist <add/remove> <playername> ง3to add/remove a player from your blacklist");
-			player.sendMessage("ง3use ง9/c <message> ง3to talk in the chat group");
+					"ยง3use ยง9/chat blacklist <add/remove> <playername> ยง3to add/remove a player from your blacklist");
+			player.sendMessage("ยง3use ยง9/c <message> ยง3to talk in the chat group");
 			return false;
 		} else {
-			player.sendMessage("ง4wrong use, use งc/chat help ง4 for more info");
+			player.sendMessage("ยง4wrong use, use ยงc/chat help ยง4 for more info");
 		}
 
 		return false;
 	}
-
 }
